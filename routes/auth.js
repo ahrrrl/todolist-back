@@ -4,7 +4,7 @@ import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
 
 const router = express.Router();
-const secret = 'your_jwt_secret'; // 환경 변수로 설정하는 것이 좋습니다
+const secret = process.env.JWT_SECRET; // 환경 변수로 설정하는 것이 좋습니다
 
 router.post('/register', async (req, res) => {
   try {
@@ -29,7 +29,7 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(401).send({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '1h' });
+    const token = jwt.sign({ userId: user._id }, secret, { expiresIn: '24h' });
     res.send({ token });
   } catch (error) {
     console.error(error);
