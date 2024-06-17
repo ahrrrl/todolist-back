@@ -2,6 +2,7 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 import User from '../models/user.js';
+import auth from '../middleware/auth.js';
 
 const router = express.Router();
 const secret = process.env.JWT_SECRET; // 환경 변수로 설정하는 것이 좋습니다
@@ -16,6 +17,12 @@ router.post('/register', async (req, res) => {
     console.error(error);
     res.status(400).send({ error: 'Error registering user' });
   }
+});
+
+router.get('/user', auth, (req, res) => {
+  res.send({
+    username: req.user.username,
+  });
 });
 
 router.post('/login', async (req, res) => {
