@@ -20,8 +20,8 @@ router.post('/register', async (req, res) => {
 });
 
 router.get('/user', auth, (req, res) => {
-  const { userId, username } = req.user;
-  res.json({ userId, username });
+  const { username } = req.user;
+  res.json({ username });
 });
 
 router.post('/login', async (req, res) => {
