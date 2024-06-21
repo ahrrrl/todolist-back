@@ -5,7 +5,7 @@ import User from '../models/user.js';
 import auth from '../middleware/auth.js';
 
 const router = express.Router();
-const secret = process.env.JWT_SECRET; // 환경 변수로 설정하는 것이 좋습니다
+const secret = process.env.JWT_SECRET;
 
 router.post('/register', async (req, res) => {
   try {
@@ -35,13 +35,43 @@ router.post('/login', async (req, res) => {
     if (!isMatch) {
       return res.status(401).send({ error: 'Invalid credentials' });
     }
-    const token = jwt.sign({ userId: user._id, username }, secret, {
-      expiresIn: '24h',
+    // 액세스 토큰과 리프레시 토큰 생성
+    const accessToken = jwt.sign({ userId: user._id, username }, secret, {
+      expiresIn: '1h', // 예시: 1시간 유효 기간
     });
-    res.send({ token, username });
+    const refreshToken = jwt.sign({ userId: user._id, username }, secret, {
+      expiresIn: '7d', // 예시: 7일 유효 기간
+    });
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 (밀리초 단위)
+    });
+    res.json({ accessToken, username });
   } catch (error) {
     console.error(error);
     res.status(500).send({ error: 'Server error' });
+  }
+});
+
+router.post('/refresh-token', async (req, res) => {
+  const refreshToken = req.cookies.refreshToken;
+  if (!refreshToken) {
+    return res.status(401).json({ message: 'Refresh token not found' });
+  }
+  try {
+    const decoded = jwt.verify(refreshToken, secret);
+    const accessToken = jwt.sign(
+      { userId: decoded.userId, username: decoded.username },
+      secret,
+      {
+        expiresIn: '1h', // 액세스 토큰의 유효 기간 설정
+      }
+    );
+    res.json({ accessToken, username: decoded.username });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 
