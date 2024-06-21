@@ -46,6 +46,7 @@ router.post('/login', async (req, res) => {
       httpOnly: true,
       // secure: true, //개발 이후에 true로 바꿀것 -> https에만 쿠키가 전송되게함!
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 (밀리초 단위)
+      sameSite: 'None',
     });
     res.json({ accessToken, username });
   } catch (error) {
