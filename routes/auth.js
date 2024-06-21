@@ -46,8 +46,6 @@ router.post('/login', async (req, res) => {
       httpOnly: true,
       // secure: true, //개발 이후에 true로 바꿀것 -> https에만 쿠키가 전송되게함!
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7일 (밀리초 단위)
-      domain: 'todolist-front-opal.vercel.app', // 쿠키가 유효한 도메인 설정
-      path: '/', // 사이트 전체에 대해 쿠키가 유효하도록 설정
     });
     res.json({ accessToken, username });
   } catch (error) {
