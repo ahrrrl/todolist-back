@@ -12,7 +12,12 @@ const app = express();
 const PORT = process.env.PORT || 5000;
 const MONGODB_URI = process.env.MONGODB_URI;
 
-app.use(cors());
+pp.use(
+  cors({
+    origin: ['https://todolist-front-opal.vercel.app', 'http://localhost:5173'], // 허용할 도메인들
+    credentials: true, // 쿠키를 포함한 요청을 허용
+  })
+);
 app.use(express.json());
 
 mongoose
