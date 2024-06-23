@@ -5,6 +5,7 @@ import todoRoutes from './routes/todos.js';
 import authRoutes from './routes/auth.js';
 import dotenv from 'dotenv';
 import authMiddleware from './middleware/auth.js';
+import cookieParser from 'cookie-parser';
 
 dotenv.config();
 
@@ -19,6 +20,7 @@ app.use(
   })
 );
 app.use(express.json());
+app.use(cookieParser());
 
 mongoose
   .connect(MONGODB_URI)
